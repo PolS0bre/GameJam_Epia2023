@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     public float playerVelocity;
     private Rigidbody2D rig;
     private float jumpForce = 10f;
+    private float limitX = 8.1f;
+    private float limitY = 4.25f;
     private bool isGrounded;
     public LayerMask GroundLayer;
     //public GameManager gm;
@@ -66,6 +68,20 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S) && isGrounded)
         {
             //Baixar plataforma
+        }
+
+        //Colision check
+        if (transform.position.x <= -limitX)
+        {
+            transform.position = new Vector3(-limitX, transform.position.y, 0);
+        }
+        else if (transform.position.x >= limitX)
+        {
+            transform.position = new Vector3(limitX, transform.position.y, 0);
+        }
+        if (transform.position.y <= -limitY)
+        {
+            transform.position = new Vector3(transform.position.x, -limitY, 0);
         }
 
     }
