@@ -8,14 +8,16 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rig;
     private float jumpForce = 10f;
     private float limitX = 8.1f;
-    private float limitY = 4.25f;
     private bool isGrounded;
     public LayerMask GroundLayer;
-    //public GameManager gm;
+    private GameObject gameManager;
+    private PlayerManager pMan;
 
     void Start()
     {
         rig = GetComponent<Rigidbody2D>();
+        gameManager = GameObject.Find("Game Manager");
+        pMan = gameManager.GetComponent<PlayerManager>();
     }
 
     // Update is called once per frame
@@ -64,12 +66,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        //Saltar cap a baix
-        if (Input.GetKeyDown(KeyCode.S) && isGrounded)
-        {
-            //Baixar plataforma
-        }
-
         //Colision check
         if (transform.position.x <= -limitX)
         {
@@ -79,16 +75,23 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.position = new Vector3(limitX, transform.position.y, 0);
         }
-        if (transform.position.y <= -limitY)
-        {
-            transform.position = new Vector3(transform.position.x, -limitY, 0);
-        }
 
+        if(transform.position.y <= -5.8f)
+        {
+            pMan.isDead= true;
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.tag == "Floor"){
             isGrounded = true;
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            pMan.isDead = true;
         }
     }
 

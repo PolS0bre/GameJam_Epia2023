@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 public class PlatformController : MonoBehaviour
 {
-    private float SpeedMove = 5.5f;
+    private float SpeedMove = 6.5f;
     private float limitX = 5.5f;
     private float limitY = 4.3f;
     //private bool mouseSensor = true;
@@ -39,9 +39,9 @@ public class PlatformController : MonoBehaviour
             {
                 transform.position = new Vector3(transform.position.x, -limitY, 0);
             }
-            else if (transform.position.y >= limitY)
+            else if (transform.position.y >= 2.77f)
             {
-                transform.position = new Vector3(transform.position.x, limitY, 0);
+                transform.position = new Vector3(transform.position.x, 2.77f, 0);
                 //Has perdut
             }
             /*
