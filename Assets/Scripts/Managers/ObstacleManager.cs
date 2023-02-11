@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ObstacleManager : MonoBehaviour
 {
-    public GameObject[] obstaclesList;
+    [SerializeField]
+    private GameObject[] obstaclesList;
+
     public float time = 5;
     private PlayerManager pMan;
 
@@ -17,7 +19,19 @@ public class ObstacleManager : MonoBehaviour
     IEnumerator GenerateEnemy()
     {
         float newY = Random.Range(-4.4f, 4.4f);
-        Instantiate(obstaclesList[0], new Vector3(15, newY, 0), Quaternion.identity);
+        float isPowerUp = Random.Range(0, 100);
+        int index;
+        //Percentage of power ups vs enemies
+        if (isPowerUp > 80)
+        {
+            index = Random.Range(3, 6);
+        }
+        else
+        {
+            index = Random.Range(0, 3);
+        }
+        //Generate enemy/power
+        Instantiate(obstaclesList[index], new Vector3(15, newY, 0), Quaternion.identity);
         new WaitForSeconds(time);
         yield return new WaitForSeconds(time);
 

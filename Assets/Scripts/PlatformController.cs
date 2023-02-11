@@ -4,8 +4,10 @@ using UnityEditor;
 using UnityEngine;
 public class PlatformController : MonoBehaviour
 {
+    [SerializeField]
     private float SpeedMove = 6.5f;
-    private float limitX = 5.5f;
+
+    private float limitX = 7.45f;
     private float limitY = 4.3f;
     //private bool mouseSensor = true;
     // Start is called before the first frame update
@@ -16,13 +18,10 @@ public class PlatformController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {/*
-        if (mouseSensor)
-        {*/
+    {
             float h = Input.GetAxis("Mouse X");
             float v = Input.GetAxis("Mouse Y");
             Vector3 movement = new Vector3(h, v, 0);
-            //transform.Translate(h, v, 0);
             //Movement hrizontal
             transform.position = transform.position + SpeedMove * (movement * Time.deltaTime);
 
@@ -42,30 +41,7 @@ public class PlatformController : MonoBehaviour
             else if (transform.position.y >= 2.77f)
             {
                 transform.position = new Vector3(transform.position.x, 2.77f, 0);
-                //Has perdut
             }
-            /*
-        }
-        else
-        {
-
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                transform.position = transform.position + SpeedMove * (Vector3.left * Time.deltaTime);
-            }
-            else if (Input.GetKey(KeyCode.RightArrow))
-            {
-                transform.position = transform.position + SpeedMove * (Vector3.right * Time.deltaTime);
-            }
-
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                transform.position = transform.position + SpeedMove * (Vector3.up * Time.deltaTime);
-            }
-            else if (Input.GetKey(KeyCode.DownArrow))
-            {
-                transform.position = transform.position + SpeedMove * (Vector3.down * Time.deltaTime);
-            }
-        }*/
+            
     }
 }

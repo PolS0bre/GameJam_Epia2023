@@ -4,12 +4,22 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float playerVelocity;
-    private Rigidbody2D rig;
-    private float jumpForce = 10f;
-    private float limitX = 8.1f;
+    [SerializeField]
+    private float playerVelocity = 6.5f;
+    [SerializeField]
+    private float jumpForce = 8f;
+    [SerializeField]
     private bool isGrounded;
-    public LayerMask GroundLayer;
+
+    //Power ups bools
+    public bool isInvencible = false;
+    private SpriteRenderer InvencibleEffect;
+    public bool ExtraLife = false;
+
+    public GameObject OutOfRange;
+
+    private Rigidbody2D rig;
+    private float limitX = 8.1f;
     private GameObject gameManager;
     private PlayerManager pMan;
 
@@ -18,13 +28,13 @@ public class PlayerMovement : MonoBehaviour
         rig = GetComponent<Rigidbody2D>();
         gameManager = GameObject.Find("Game Manager");
         pMan = gameManager.GetComponent<PlayerManager>();
+        InvencibleEffect = GameObject.Find("InvencibleFX").GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //moviment horitzontal
-        //if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         if (Input.GetKey(KeyCode.A))
         {
             if (!isGrounded)
@@ -36,7 +46,6 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = transform.position + playerVelocity * (Vector3.left * Time.deltaTime);
             }
         }
-        //else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
         else if (Input.GetKey(KeyCode.D))
         {
             if (!isGrounded)
@@ -47,14 +56,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 transform.position = transform.position + playerVelocity * (Vector3.right * Time.deltaTime);
             }
-        }
-
-
-        //Pausar
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-            //Pausar
         }
 
         //Saltar
@@ -78,7 +79,34 @@ public class PlayerMovement : MonoBehaviour
 
         if(transform.position.y <= -5.8f)
         {
-            pMan.isDead= true;
+            if(ExtraLife == false)
+            {
+                pMan.isDead = true;
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x, 7, 0);
+                ExtraLife = false;
+            }
+        }
+
+        if(transform.position.y > 4.9f)
+        {
+            OutOfRange.GetComponent<SpriteRenderer>().enabled = true;
+            OutOfRange.transform.position = new Vector3(transform.position.x, OutOfRange.transform.position.y, OutOfRange.transform.position.z);
+        }
+        else
+        {
+            OutOfRange.GetComponent<SpriteRenderer>().enabled = false;
+        }
+
+        if (isInvencible)
+        {
+            InvencibleEffect.enabled = true;
+        }
+        else
+        {
+            InvencibleEffect.enabled = false;
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -89,9 +117,20 @@ public class PlayerMovement : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if(isInvencible == false)
         {
-            pMan.isDead = true;
+            if (collision.gameObject.tag == "Enemy")
+            {
+                if(ExtraLife == false)
+                {
+                    pMan.isDead = true;
+                }
+                else
+                {
+                    transform.position = new Vector3(transform.position.x, 7, 0);
+                    ExtraLife = false;
+                }
+            }
         }
     }
 
