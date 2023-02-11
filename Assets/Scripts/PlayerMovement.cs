@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public Animator animator;
     [SerializeField]
     private float playerVelocity = 6.5f;
     [SerializeField]
     private float jumpForce = 8f;
     [SerializeField]
     private bool isGrounded;
+
+    [SerializeField]
+    private AudioClip audioCrash;
+    [SerializeField]
+    private AudioSource AudioChanged;
 
     //Power ups bools
     public bool isInvencible = false;
@@ -23,12 +29,16 @@ public class PlayerMovement : MonoBehaviour
     private GameObject gameManager;
     private PlayerManager pMan;
 
+    private bool isMoving = false;
+    private float horMoveAnim = 0;
+
     void Start()
     {
         rig = GetComponent<Rigidbody2D>();
         gameManager = GameObject.Find("Game Manager");
         pMan = gameManager.GetComponent<PlayerManager>();
         InvencibleEffect = GameObject.Find("InvencibleFX").GetComponent<SpriteRenderer>();
+        AudioChanged = GameObject.Find("Bg Engine").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -37,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
         //moviment horitzontal
         if (Input.GetKey(KeyCode.A))
         {
+            isMoving = true;
             if (!isGrounded)
             {
                 transform.position = transform.position + (playerVelocity * (Vector3.left * Time.deltaTime)/1.25f);
@@ -48,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.D))
         {
+            isMoving = true;
             if (!isGrounded)
             {
                 transform.position = transform.position + (playerVelocity * (Vector3.right * Time.deltaTime)/ 1.25f);
@@ -57,6 +69,21 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = transform.position + playerVelocity * (Vector3.right * Time.deltaTime);
             }
         }
+        else
+        {
+            isMoving = false;
+        }
+
+        if (isMoving)
+        {
+            horMoveAnim = 10f;
+        }
+        else
+        {
+            horMoveAnim = 0f;
+        }
+
+        animator.SetFloat("velocidad", Mathf.Abs(horMoveAnim));
 
         //Saltar
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -79,8 +106,9 @@ public class PlayerMovement : MonoBehaviour
 
         if(transform.position.y <= -5.8f)
         {
-            if(ExtraLife == false)
+            if (ExtraLife == false)
             {
+                AudioChanged.PlayOneShot(audioCrash);
                 pMan.isDead = true;
             }
             else
@@ -121,8 +149,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (collision.gameObject.tag == "Enemy")
             {
-                if(ExtraLife == false)
+                if (ExtraLife == false)
                 {
+                    AudioChanged.PlayOneShot(audioCrash);
                     pMan.isDead = true;
                 }
                 else
